@@ -1,0 +1,7 @@
+两个不同的线程对同一个变量同时进行读写操作会发生 data race 。在出现 data race 的时候程序可能会出现一些奇怪的行为，有时会是读到旧值，
+有时不是读到旧值那么简单。
+
+至于你说可以加 volatile ，这个只对简单类型是有效的，如 int 一类的。对类类型的，volatile 只能保证类对象的引用本身是 volatile 的，比如
+elementData = another_array 是不会发生 data race 的，但是 volatile 不会传递到类的内部。比如，elementData[i] = data 就有可能与其他的读写发生 data race 。
+
+原则就是，只要有线程可能有写操作，那么所有的读和写操作都必须加锁，才可以保证不发生 data race 。
